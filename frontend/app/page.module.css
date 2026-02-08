@@ -1,0 +1,65 @@
+.main {
+    min-height: 100vh;
+    padding: var(--space-8) 0;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: var(--space-8);
+    padding: var(--space-6) 0;
+}
+
+.subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error {
+    text-align: center;
+    padding: var(--space-8);
+    background: var(--color-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.error h2 {
+    color: var(--color-error);
+    margin-bottom: var(--space-4);
+}
+
+.error button {
+    margin-top: var(--space-4);
+}
+
+.empty {
+    text-align: center;
+    padding: var(--space-8);
+    color: var(--color-text-secondary);
+}
+
+.skeletonCard {
+    padding: var(--space-4);
+    background: var(--color-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+    .main {
+        padding: var(--space-5) 0;
+    }
+
+    .hero {
+        margin-bottom: var(--space-5);
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+}
