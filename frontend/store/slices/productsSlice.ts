@@ -45,7 +45,7 @@ export const fetchProducts = createAsyncThunk<
   'products/fetchProducts',
   async (params) => {
       const response = await api.get<Product[]>('/products', { params });
-      return response.data;
+      return response.data ?? [];   // ✅ never undefined
   }
 );
 
