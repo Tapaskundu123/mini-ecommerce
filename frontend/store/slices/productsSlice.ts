@@ -39,14 +39,14 @@ const initialState: ProductsState = {
 
 
 export const fetchProducts = createAsyncThunk<
-  Product[],
-  Record<string, any> | void
+    Product[],
+    Record<string, any> | undefined
 >(
-  'products/fetchProducts',
-  async (params) => {
-      const response = await api.get<Product[]>('/products', { params });
-      return response.data ?? [];   // ✅ never undefined
-  }
+    'products/fetchProducts',
+    async (params) => {
+        const response = await api.get<Product[]>('/products', params ? { params } : undefined);
+        return response.data ?? [];   // ✅ never undefined
+    }
 );
 
 const productsSlice = createSlice({
