@@ -1,0 +1,108 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: var(--color-glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--color-glass-border);
+    padding: var(--space-4) 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+    transition: transform var(--transition-base);
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.nav {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+}
+
+.navLink,
+.cartLink {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.navLink:hover,
+.cartLink:hover {
+    background: var(--color-surface-elevated);
+    color: var(--color-primary-light);
+}
+
+.cartLink {
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-glass-border);
+    position: relative;
+}
+
+.cartLink:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+}
+
+.cartIcon {
+    width: 20px;
+    height: 20px;
+}
+
+.cartLink .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    animation: scaleIn var(--transition-base);
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .nav {
+        gap: var(--space-2);
+    }
+
+    .navLink,
+    .cartLink {
+        padding: var(--space-2) var(--space-3);
+        font-size: 0.875rem;
+    }
+
+    .cartIcon {
+        width: 18px;
+        height: 18px;
+    }
+}
