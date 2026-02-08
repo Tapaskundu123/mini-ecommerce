@@ -1,48 +1,57 @@
-# Multi-stage build for Next.js
-
-# Stage 1: Dependencies
-FROM node:18-alpine AS dependencies
+# ==============================
+# Stage 1 — Dependencies
+# ==============================
+FROM node:18-alpine AS deps
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm ci
 
-# Stage 2: Builder
+
+# ==============================
+# Stage 2 — Builder
+# ==============================
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY --from=dependencies /app/node_modules ./node_modules
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Set environment variable for build
-ENV NEXT_PUBLIC_API_URL=http://backend:5000/api
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# build arg from CI/CD
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# ensure public directory exists even if empty to prevent COPY failure
+RUN mkdir -p public
 
 RUN npm run build
 
-# Stage 3: Runner
+
+# ==============================
+# Stage 3 — Runner
+# ==============================
 FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+# create non-root user
+RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
-# Copy necessary files
-COPY --from=builder /app/public ./public
+# standalone output (always exists if next.config.js is correct)
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Change ownership
-RUN chown -R nextjs:nodejs /app
+# public folder may or may not exist — safe copy pattern (using trailing slash)
+COPY --from=builder /app/public/ ./public/
 
-# Switch to non-root user
 USER nextjs
 
 EXPOSE 3000
-
 ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+ENV HOSTNAME=0.0.0.0
 
 CMD ["node", "server.js"]
