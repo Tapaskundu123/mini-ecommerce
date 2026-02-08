@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+.swc
+.env*.local
+npm-debug.log
+yarn-error.log
+.git
+.gitignore
+README.md
+.DS_Store
+*.log
+coverage
+.vscode
+.idea
