@@ -1,44 +1,33 @@
-# Multi-stage build for production optimization
-
-# Stage 1: Dependencies
-FROM node:18-alpine AS dependencies
+# ---------- Dependencies ----------
+FROM node:18-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
-# Stage 2: Build
+
+# ---------- Build ----------
 FROM node:18-alpine AS build
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
 COPY . .
+RUN npm ci
 
-# Stage 3: Production
-FROM node:18-alpine AS production
+
+# ---------- Production ----------
+FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Copy dependencies from dependencies stage
-COPY --from=dependencies /app/node_modules ./node_modules
+ENV NODE_ENV=production
 
-# Copy application code
+# copy app code first
 COPY --from=build /app ./
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+# then overwrite with prod node_modules
+COPY --from=deps /app/node_modules ./node_modules
 
-# Change ownership
-RUN chown -R nodejs:nodejs /app
-
-# Switch to non-root user
+# non-root user
+RUN addgroup -S nodejs && adduser -S nodejs -G nodejs
 USER nodejs
 
-# Expose port
 EXPOSE 5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:5000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
-
-# Start application
 CMD ["npm", "start"]

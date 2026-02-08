@@ -5,14 +5,16 @@ const config = require('./src/config/env');
 // Connect to MongoDB
 connectDB();
 
+// ✅ Use Render / cloud assigned port first
+const PORT = process.env.PORT || config.port || 5000;
+
 // Start server
-const server = app.listen(config.port, () => {
-  console.log(`🚀 Server running in ${config.nodeEnv} mode on port ${config.port}`);
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server running in ${config.nodeEnv} mode on port ${PORT}`);
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.error(`❌ Unhandled Rejection: ${err.message}`);
-  // Close server & exit process
   server.close(() => process.exit(1));
 });
