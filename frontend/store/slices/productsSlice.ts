@@ -37,14 +37,17 @@ const initialState: ProductsState = {
     },
 };
 
-// Async thunk to fetch products
-export const fetchProducts = createAsyncThunk(
-    'products/fetchProducts',
-    async (params?: Record<string, any>) => {
-        const response = await api.get('/products', { params });
-        return response.data;
-    }
+export const fetchProducts = createAsyncThunk<
+  Product[],                    // ✅ return type
+  Record<string, any> | void    // ✅ argument type
+>(
+  'products/fetchProducts',
+  async (params) => {
+      const response = await api.get('/products', { params });
+      return response.data;
+  }
 );
+
 
 const productsSlice = createSlice({
     name: 'products',
